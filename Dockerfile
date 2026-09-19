@@ -3,18 +3,18 @@ FROM golang:alpine AS builder
 
 WORKDIR /app
 
-ENV GOTOOLCHAIN=auto
+ENV CGO_ENABLED=0
+ENV GOOS=linux
 
 # Install certificates and git
 RUN apk add --no-cache ca-certificates git
 
-# Cache dependencies
-COPY go.mod go.sum ./
-RUN go mod download
-
-# Copy source code and build
+# Copy source code
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/api ./cmd/api
+
+# Download dependencies & compile binary
+RUN go mod tidy
+RUN go build -ldflags="-w -s" -o /app/api ./cmd/api
 
 # Run Stage
 FROM alpine:3.20
