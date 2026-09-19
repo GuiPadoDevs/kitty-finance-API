@@ -9,7 +9,9 @@ api/entrypoint
 
 # Environment files
 .env
+.env.*
 .env.local
+.env.production
 
 # OS files
 .DS_Store
